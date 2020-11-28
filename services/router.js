@@ -1,11 +1,8 @@
 const express = require('express');
 const router = new express.Router();
-const employees = require('../controllers/employees.js');
+const acc_percent = require('../controllers/acc_percent.js');
  
-router.route('/employees/select/:id?')
-  .get(employees.get_select);
+router.route('/accident_percentage')
+  .get(acc_percent.get_select);
 
-router.route('/employees/:id?')
-  .get(employees.get);
- 
 module.exports = router;

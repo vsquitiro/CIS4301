@@ -3,6 +3,7 @@ const express = require('express');
 const morgan = require('morgan');
 const webServerConfig = require('../config/web-server.js');
 const router = require('./router.js');
+const bodyParser = require('body-parser');
 let httpServer;
  
 function initialize() {
@@ -12,10 +13,11 @@ function initialize() {
  
     app.use(morgan('combined'));
 
+    app.use(bodyParser.json());
     app.use('/api', router);
 
     app.get('/', (req, res) => {
-      res.end('Hello World!');
+      res.end('Connection test successful');
     });
  
     httpServer.listen(webServerConfig.port)
