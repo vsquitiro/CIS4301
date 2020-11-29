@@ -1,4 +1,4 @@
-const acc_percent = require('../db_apis/acc_percent.js');
+const graph_results = require('../db_apis/graph_results.js');
 
 async function post_select(req, res, next) {
   try {
@@ -6,8 +6,10 @@ async function post_select(req, res, next) {
 
     // known parameters
     context.search_params = req.body.search_params;
+
+    console.log(context.search_params);
  
-    const rows = await acc_percent.select_statement(context.search_params);
+    const rows = await graph_results.select_statement(context.search_params);
  
     if (rows.length === 0) {
        res.status(404).end();

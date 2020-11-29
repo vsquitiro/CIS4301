@@ -1,4 +1,4 @@
-const acc_percent = require('../db_apis/acc_percent.js');
+const acc_percent = require('../db_apis/state_ranking.js');
 
 async function post_select(req, res, next) {
   try {
@@ -6,6 +6,8 @@ async function post_select(req, res, next) {
 
     // known parameters
     context.search_params = req.body.search_params;
+
+    console.log(context.search_params);
  
     const rows = await acc_percent.select_statement(context.search_params);
  
