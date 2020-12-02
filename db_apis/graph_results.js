@@ -1,11 +1,34 @@
 const database = require('../services/database.js');
-  
-const queryBegin = `with results as (select * from bd1.involved_in natural join bd1.person natural join 
-    bd1.accident natural join bd1.states where speed < 900 and speed_limit < 90 and speed <> 0 and age < 
-    900 and age > 0) select accident_count as accident_count from (select count(unique state_case_no) as 
-    accident_count from results where`;
 
-const queryEnd = `)`;
+const queryPreMonth = [
+    `with results as (select * from bd1.involved_in natural join bd1.person natural join bd1.accident 
+    natural join bd1.states where speed < 900 and speed_limit < 90 and speed <> 0 and age < 900 and 
+    age > 0) select * from (select accident_count, 1 as month from (select count(unique state_case_no) 
+    as accident_count from results where (timestamp > '31-DEC-2014' and timestamp < '01-FEB-2015')`,
+    `)) union (select accident_count, 2 as month from (select count(unique state_case_no) 
+    as accident_count from results where (timestamp > '31-JAN-2015' and timestamp < '01-MAR-2015')`,
+    `)) union (select accident_count, 3 as month from (select count(unique state_case_no) 
+    as accident_count from results where (timestamp > '28-FEB-2015' and timestamp < '01-APR-2015')`,
+    `)) union (select accident_count, 4 as month from (select count(unique state_case_no) 
+    as accident_count from results where (timestamp > '31-MAR-2015' and timestamp < '01-MAY-2015')`,
+    `)) union (select accident_count, 5 as month from (select count(unique state_case_no) 
+    as accident_count from results where (timestamp > '30-APR-2015' and timestamp < '01-JUN-2015')`,
+    `)) union (select accident_count, 6 as month from (select count(unique state_case_no) 
+    as accident_count from results where (timestamp > '31-MAY-2015' and timestamp < '01-JUL-2015')`,
+    `)) union (select accident_count, 7 as month from (select count(unique state_case_no) 
+    as accident_count from results where (timestamp > '30-JUN-2015' and timestamp < '01-AUG-2015')`,
+    `)) union (select accident_count, 8 as month from (select count(unique state_case_no) 
+    as accident_count from results where (timestamp > '31-JUL-2015' and timestamp < '01-SEP-2015')`,
+    `)) union (select accident_count, 9 as month from (select count(unique state_case_no) 
+    as accident_count from results where (timestamp > '31-AUG-2015' and timestamp < '01-OCT-2015')`,
+    `)) union (select accident_count, 10 as month from (select count(unique state_case_no) 
+    as accident_count from results where (timestamp > '30-SEP-2015' and timestamp < '01-NOV-2015')`,
+    `)) union (select accident_count, 11 as month from (select count(unique state_case_no) 
+    as accident_count from results where (timestamp > '31-OCT-2015' and timestamp < '01-DEC-2015')`,
+    `)) union (select accident_count, 12 as month from (select count(unique state_case_no) 
+    as accident_count from results where (timestamp > '30-NOV-2015' and timestamp < '01-JAN-2016')`];
+
+const queryEnd = `)) order by MONTH`;
 
 function setMinMaxWhere(param, default_min, default_max, context) {
     uniqueWhere = `(` + param + ` > `;
@@ -67,14 +90,15 @@ function addWhereClause(context) {
 }
 
 async function select_statement(context_list) {
-    query = queryBegin;
+    query = ``;
 
-    for(var i=0; i < context_list.length; i++) {
-        if(i != 0) {
+    for(var j=0; j < 12; j++) {
+        query += queryPreMonth[j];
+        for(var i=0; i < context_list.length; i++) {
             query += ` and `;
+            uniqueWhere = addWhereClause(context_list[i]);
+            query += uniqueWhere
         }
-        uniqueWhere = addWhereClause(context_list[i]);
-        query += uniqueWhere
     }
 
     query += queryEnd;

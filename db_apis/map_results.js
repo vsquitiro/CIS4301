@@ -1,11 +1,10 @@
 const database = require('../services/database.js');
   
-const queryBegin = `with results as (select * from bd1.involved_in natural join bd1.person natural 
-    join bd1.accident natural join bd1.states where speed < 900 and speed_limit < 90 and speed <> 0 
-    and age < 900 and age > 0 and timestamp is not null) select (accident_count/all_count)*100 as 
-    accident_percentage from (select count(unique state_case_no) as accident_count from results where `;
+const queryBegin = `with results as (select * from bd1.involved_in natural join bd1.person natural join 
+    bd1.accident natural join bd1.states where speed < 900 and speed_limit < 90 and speed <> 0 and age < 
+    900 and age > 0) select latitude, longitude from results where `;
 
-const queryEnd = `), (select count(unique state_case_no) as all_count from results)`;
+const queryEnd = ``;
 
 function setMinMaxWhere(param, default_min, default_max, context) {
     uniqueWhere = `(` + param + ` > `;
@@ -20,6 +19,7 @@ function setMinMaxWhere(param, default_min, default_max, context) {
     } else {
         uniqueWhere += default_max + `)`;
     }
+    console.log(uniqueWhere);
     return uniqueWhere;
 }
 
@@ -61,6 +61,7 @@ function addWhereClause(context) {
         querybegin = ``;
         queryend = ``;
     }
+    console.log(uniqueWhere);
     return uniqueWhere;
 }
 
