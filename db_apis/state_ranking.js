@@ -72,7 +72,15 @@ function addWhereClause(context) {
 function addNull(context_list) {
     null_statement = ``
     for(var i=0; i < context_list.length; i++) {
-        null_statement += ` and (` + context_list[i].param + ` is not null)`;
+        var param = context_list[i].param;
+        if (param == 'speeding') {
+            param = 'speed is not null) and (speed_limit';
+        } else if (param == 'collision') {
+            param = 'collision_type';
+        } else if (param == 'road_surface') {
+            param = 'road_surface_condition';
+        }
+        null_statement += ` and (` + param + ` is not null)`;
     }
     return null_statement;
 }
