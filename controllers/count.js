@@ -1,4 +1,4 @@
-const graph_results_jun = require('../db_apis/graph_results_jun.js');
+const count = require('../db_apis/count.js');
 
 async function post_select(req, res, next) {
   try {
@@ -6,10 +6,8 @@ async function post_select(req, res, next) {
 
     // known parameters
     context.search_params = req.body.search_params;
-
-    console.log(context.search_params);
  
-    const rows = await graph_results_jun.select_statement(context.search_params);
+    const rows = await count.select_statement(context.search_params);
  
     if (rows.length === 0) {
        res.status(404).end();
